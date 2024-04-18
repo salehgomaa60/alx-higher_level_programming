@@ -20,4 +20,3 @@ class Square(Rectangle):
     def __str__(self):
         """ Special method that returns a printable string """
         return "[Square] {}/{}".format(self.__size, self.__size)
-
