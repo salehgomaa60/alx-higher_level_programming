@@ -1,4 +1,4 @@
-\0;276;0c#!/usr/bin/python3
+#!/usr/bin/python3
 """
 module only sub class of
 """
