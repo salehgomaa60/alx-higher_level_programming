@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" listing state depending on User input"""
+""" listing states in ascending order dependent on id"""
 
 import MySQLdb
 import sys
@@ -12,15 +12,13 @@ def main():
           port=3306,
           password=sys.argv[2],
           db=sys.argv[3]
-    )
+          )
     cursor = db.cursor()
-    myquery = """
-SELECT * FROM states WHERE name LIKE BINARY '{}' ORDER BY states.id ASC"""
-    myquery = myquery.format(sys.argv[4])
-    cursor.execute(myquery)
+    cursor.execute("SELECT * FROM states ORDER BY states.id ASC")
     results = cursor.fetchall()
     for row in results:
-        print(row)
+        if row[1].startswith("N"):
+            print(row)
     cursor.close()
     db.close()
 
