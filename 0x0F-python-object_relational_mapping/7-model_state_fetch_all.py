@@ -1,17 +1,31 @@
 #!/usr/bin/python3
-"""Start link class to table in database
-"""
-import sys
-from model_state import Base, State
-from sqlalchemy import (create_engine)
+""" Listing model states from mysqldb"""
+
+
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from model_state import Base, State
+import sys
+
+
+def db_engine():
+    user = sys.argv[1]
+    password = sys.argv[2]
+    db = sys.argv[3]
+
+    engine = create_engine(
+        f'mysql+mysqldb://{user}:{password}@localhost:3306/{db}'
+        )
+    Base.metadata.create_all(engine)
+
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    states = session.query(State).order_by(State.id).all()
+    for state in states:
+        print(f"{state.id}: {state.name}")
+
+    session.close()
 
 
 if __name__ == "__main__":
-    engine = create_engine('mysql+mysqldb://{}:{}@localhost:3306/{}'
-                           .format(sys.argv[1], sys.argv[2], sys.argv[3]))
-    Base.metadata.create_all(engine)
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    for state in session.query(State).order_by(State.id):
-        print(state.id, state.name, sep=": ")        
+    db_engine()
