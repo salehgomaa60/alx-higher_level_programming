@@ -23,7 +23,6 @@ def db_engine():
     states = session.query(State).order_by(asc(state.id)).all()
     for state in states:
         print(f"{state.id}: {state.name}")
-        print("\n")
 
     session.close()
 
