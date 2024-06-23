@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" how to protect the script  against sql injection"""
+""" a script listing cities by states"""
 
 import MySQLdb
 import sys
@@ -14,11 +14,16 @@ def main():
           database=sys.argv[3]
     )
     cursor = db.cursor()
-    query = "SELECT * FROM states WHERE name = %s ORDER BY id ASC"
+    query = """
+    SELECT c.id, c.name
+    FROM cities c
+    JOIN states s ON c.state_id = s.id
+    WHERE s.name = %s
+    ORDER BY c.id ASC
+    """
     cursor.execute(query, (sys.argv[4],))
     results = cursor.fetchall()
-    for row in results:
-        print(row)
+    print(", ".join([row[1] for row in results]))
     cursor.close()
     db.close()
 
