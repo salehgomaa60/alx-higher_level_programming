@@ -1,20 +1,32 @@
 #!/usr/bin/python3
-""" printing  the first state object from the database hbtn_0e_6_usa
-"""
-import sys
-from model_state import Base, State
-from sqlalchemy import (create_engine)
+""" Listing the model  states from mysqldb"""
+
+
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from model_state import Base, State
+import sys
+
+
+def db_engine():
+    user = sys.argv[1]
+    password = sys.argv[2]
+    db = sys.argv[3]
+
+    engine = create_engine(
+        f'mysql+mysqldb://{user}:{password}@localhost:3306/{db}'
+        )
+    Base.metadata.create_all(engine)
+
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    states = session.query(State).order_by(State.id).first()
+    if states:
+        print(f"{states.id}: {states.name}")
+    else:
+        print("Nothing")
+    session.close()
 
 
 if __name__ == "__main__":
-    engine = create_engine('mysql+mysqldb://{}:{}@localhost:3306/{}'
-                           .format(sys.argv[1], sys.argv[2], sys.argv[3]))
-    Base.metadata.create_all(engine)
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    state = session.query(State).first()
-    if state is None:
-        print("Nothing")
-    else:
-        print(state.id, state.name, sep=": ")
+    db_engine()
